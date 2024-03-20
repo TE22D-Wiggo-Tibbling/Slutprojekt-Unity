@@ -18,17 +18,14 @@ public class PlayerController : MonoBehaviour
 
 
     [SerializeField]
-    float jumpForce = 10;
-
-    [SerializeField]
     float gravityMultiplier = 4;
 
     float yVelocity = 0;
 
-    [SerializeField]
+
     bool isJumping = false;
 
-    bool roling = false;
+    bool roling;
     void Start()
     {
         animator = GetComponent<Animator>();
@@ -37,26 +34,28 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
-        
-        Vector3 movement =
-        Camera.main.transform.right * inputVector.x
-        + Camera.main.transform.forward * inputVector.y;
 
+        Vector3 movement =
+           Camera.main.transform.right * inputVector.x
+           + Camera.main.transform.forward * inputVector.y;
+
+        if (this.animator.GetCurrentAnimatorStateInfo(0).IsName("Roling")) return;
+        if (this.animator.GetCurrentAnimatorStateInfo(0).IsName("Jump")) return;
 
 
         if (GetComponent<CharacterController>().isGrounded)
         {
             yVelocity = -1;
-            if (isJumping)
-            {
-                // yVelocity = jumpForce;
-                animator.SetBool("jumping", true);
-                isJumping = false;
-            }
-            else
-            {
-                animator.SetBool("jumping", false);
-            }
+            // if (isJumping)
+            // {
+
+            //     animator.SetBool("jumping", true);
+            //     isJumping = false;
+            // }
+            // else
+            // {
+            //     animator.SetBool("jumping", false);
+            // }
         }
 
         if (movement.magnitude > 0)
@@ -64,24 +63,12 @@ public class PlayerController : MonoBehaviour
 
             movement.y = 0;
             movement = movement.normalized;
-            animator.SetBool("Walk", true);
-            if(roling){
-        animator.SetBool("roling", true);
-        roling = false;
-            }
-            else{
-        animator.SetBool("roling", false);
             transform.forward = movement;
-            }
 
+            animator.SetBool("Walk", true);
         }
-        else
-        {
-            animator.SetBool("Walk", false);
-        }
+        else animator.SetBool("Walk", false); 
 
-        
-        
 
 
         yVelocity += Physics.gravity.y * gravityMultiplier * Time.deltaTime;
@@ -99,11 +86,12 @@ public class PlayerController : MonoBehaviour
     void OnJump(InputValue value)
     {
         isJumping = true;
-
+        animator.SetTrigger("jump");
     }
 
-    void OnFire(InputValue value){
-        roling = true;
+    void OnFire(InputValue value)
+    {
+        animator.SetTrigger("rolling");
     }
 
 }

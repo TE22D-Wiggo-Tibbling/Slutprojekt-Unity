@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -26,6 +27,8 @@ public class PlayerController : MonoBehaviour
 
     [SerializeField]
     bool isJumping = false;
+
+    bool roling = false;
     void Start()
     {
         animator = GetComponent<Animator>();
@@ -34,6 +37,7 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
+        
         Vector3 movement =
         Camera.main.transform.right * inputVector.x
         + Camera.main.transform.forward * inputVector.y;
@@ -47,15 +51,12 @@ public class PlayerController : MonoBehaviour
             {
                 // yVelocity = jumpForce;
                 animator.SetBool("jumping", true);
+                isJumping = false;
             }
             else
             {
                 animator.SetBool("jumping", false);
             }
-        }
-        else{
-
-        yVelocity += Physics.gravity.y * gravityMultiplier * Time.deltaTime;
         }
 
         if (movement.magnitude > 0)
@@ -63,19 +64,15 @@ public class PlayerController : MonoBehaviour
 
             movement.y = 0;
             movement = movement.normalized;
-            transform.forward = movement;
             animator.SetBool("Walk", true);
-            if (GetComponent<CharacterController>().isGrounded)
-        {
-            if (isJumping)
-            {
-                animator.SetBool("jumping", true);
+            if(roling){
+        animator.SetBool("roling", true);
+        roling = false;
             }
-            else
-            {
-                animator.SetBool("jumping", false);
+            else{
+        animator.SetBool("roling", false);
+            transform.forward = movement;
             }
-        }
 
         }
         else
@@ -83,12 +80,14 @@ public class PlayerController : MonoBehaviour
             animator.SetBool("Walk", false);
         }
 
+        
+        
 
 
-        isJumping = false;
-        movement.y = yVelocity;
+        yVelocity += Physics.gravity.y * gravityMultiplier * Time.deltaTime;
         movement *= speed * Time.deltaTime;
         controller.Move(movement);
+        movement.y = yVelocity;
 
     }
 
@@ -101,6 +100,10 @@ public class PlayerController : MonoBehaviour
     {
         isJumping = true;
 
+    }
+
+    void OnFire(InputValue value){
+        roling = true;
     }
 
 }

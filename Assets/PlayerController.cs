@@ -40,22 +40,12 @@ public class PlayerController : MonoBehaviour
            + Camera.main.transform.forward * inputVector.y;
 
         if (this.animator.GetCurrentAnimatorStateInfo(0).IsName("Roling")) return;
-        if (this.animator.GetCurrentAnimatorStateInfo(0).IsName("Jump")) return;
 
 
         if (GetComponent<CharacterController>().isGrounded)
         {
             yVelocity = -1;
-            // if (isJumping)
-            // {
 
-            //     animator.SetBool("jumping", true);
-            //     isJumping = false;
-            // }
-            // else
-            // {
-            //     animator.SetBool("jumping", false);
-            // }
         }
 
         if (movement.magnitude > 0)
@@ -85,13 +75,6 @@ public class PlayerController : MonoBehaviour
 
     void OnJump(InputValue value)
     {
-        isJumping = true;
-        animator.SetTrigger("jump");
+       animator.SetTrigger("rolling");
     }
-
-    void OnFire(InputValue value)
-    {
-        animator.SetTrigger("rolling");
-    }
-
 }

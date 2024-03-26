@@ -4,12 +4,22 @@ using UnityEngine;
 
 public class CameraController : MonoBehaviour
 {
-
     [SerializeField]
-    GameObject target;
- 
+    Transform orientation;
+    [SerializeField]
+    Transform LookAt;
+    [SerializeField]
+    Transform playerObj;
+
+
+
     void Update()
     {
-       transform.LookAt(target.transform); 
+        // rotate orientation
+        Vector3 viewDir = LookAt.position - new Vector3(transform.position.x, LookAt.position.y, transform.position.z);
+        orientation.forward = viewDir.normalized;
+     
+            // playerObj.forward = viewDir.normalized;
+        
     }
 }
